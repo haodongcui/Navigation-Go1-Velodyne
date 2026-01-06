@@ -1,0 +1,24 @@
+# 机器狗的矩形轮廓 (Go1 大约长 0.6m, 宽 0.4m)
+footprint: [[-0.3, -0.2], [-0.3, 0.2], [0.3, 0.2], [0.3, -0.2]]
+# 膨胀半径：离障碍物 0.3米 内就被视为危险区域
+inflation_radius: 0.3
+
+# TF 超时容忍 (一定要给大一点，避免报错)
+transform_tolerance: 1.0
+
+# 障碍物层配置
+obstacle_range: 2.5 # 只相信 2.5米 内的雷达数据
+raytrace_range: 3.0 # 清除 3.0米 内的障碍物
+
+# 传感器源配置
+observation_sources: scan
+scan: {
+  data_type: LaserScan,
+  topic: /scan,
+  marking: true,
+  clearing: true,
+  # 关键：你的 pointcloud_to_laserscan 节点里写的 target_frame 是 velodyne
+  # 所以这里必须填 velodyne，否则算法会找不到雷达在哪里！
+  sensor_frame: velodyne,  
+  inf_is_valid: true
+}

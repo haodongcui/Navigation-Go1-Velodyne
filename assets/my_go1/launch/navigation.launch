@@ -1,0 +1,67 @@
+<launch>
+
+    <!-- <include file="$(find my_go1)/launch/start_go1.launch" /> -->
+
+    <!-- 启动 rviz, 可视化 go1 模型 -->
+    <node pkg="rviz" type="rviz" name="rviz" args="-d $(find my_go1)/rviz/velodyne_nav.rviz" />
+
+    <!-- 启动 velodyne VLP-16 激光雷达节点 -->
+    <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch">
+    </include>
+
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+        <remap from="cloud_in" to="/velodyne_points"/>
+        <remap from="scan" to="/scan"/>
+        <rosparam>
+            target_frame: velodyne # 注意不是 trunk, 是雷达自己
+            min_height: -0.15
+            max_height: 0.15
+            angle_min: -3.14159
+            angle_max: 3.14159
+            range_max: 100.0
+            use_inf: true
+        </rosparam>
+    </node>
+    
+    <node pkg="tf2_ros" type="static_transform_publisher" name="trunk_to_velodyne" args="0.2 0 0.1 0 0 0 trunk velodyne" />
+
+    <arg name="map_file" default="$(find my_go1)/maps/room_1401.yaml"/>
+    <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)"/>
+
+
+    <node pkg="amcl" type="amcl" name="amcl" output="screen">
+        <param name="odom_frame_id" value="odom"/>
+        <param name="base_frame_id" value="trunk"/> <param name="global_frame_id" value="map"/>
+        <param name="scan_topic" value="/scan"/>
+        
+        <param name="min_particles" value="500"/>
+        <param name="max_particles" value="3000"/>
+        <param name="odom_model_type" value="omni"/> <param name="odom_alpha1" value="0.2"/>
+        <param name="odom_alpha2" value="0.2"/>
+        <param name="odom_alpha3" value="0.2"/>
+        <param name="odom_alpha4" value="0.2"/>
+        <param name="odom_alpha5" value="0.2"/>
+    </node>
+
+    <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <rosparam file="$(find my_go1)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find my_go1)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find my_go1)/config/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find my_go1)/config/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find my_go1)/config/base_local_planner_params.yaml" command="load" />
+        <remap from="cmd_vel" to="/cmd_vel"/>
+    </node>
+
+    <!-- <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+        <rosparam file="$(find my_go1)/config/costmap_common_params.yaml" command="load" ns="global_costmap" />
+        <rosparam file="$(find my_go1)/config/costmap_common_params.yaml" command="load" ns="local_costmap" />
+        <rosparam file="$(find my_go1)/config/local_costmap_params.yaml" command="load" />
+        <rosparam file="$(find my_go1)/config/global_costmap_params.yaml" command="load" />
+        <rosparam file="$(find my_go1)/config/base_local_planner_params.yaml" command="load" />
+        
+        <remap from="cmd_vel" to="/cmd_vel"/>
+    </node> -->
+
+
+
+</launch>

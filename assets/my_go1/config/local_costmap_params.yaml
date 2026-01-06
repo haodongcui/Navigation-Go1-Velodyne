@@ -1,0 +1,13 @@
+local_costmap:
+  # 局部地图是在里程计坐标系下运行的
+  global_frame: odom
+  # 机器人的中心是 trunk (千万别写成 base_link)
+  robot_base_frame: trunk
+  
+  update_frequency: 5.0
+  publish_frequency: 2.0
+  static_map: false
+  rolling_window: true # 地图跟随机器人移动
+  width: 3.0
+  height: 3.0
+  resolution: 0.05

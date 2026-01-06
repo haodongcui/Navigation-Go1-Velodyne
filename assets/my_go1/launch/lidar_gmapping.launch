@@ -1,0 +1,37 @@
+<launch>
+
+    <!-- 启动 velodyne VLP-16 激光雷达节点 -->
+    <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch">
+    </include>
+
+    <!-- 发布 go1 的 base/base_link 到 velodyne 的静态变换 -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="trunk_to_velodyne" args="0.2 0 0.1 0 0 0 trunk velodyne" />
+
+    <!-- 将 velodyne vlp-16 的 三维激光扫描数据转换为二维激光扫描 -->
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+        <remap from="cloud_in" to="/velodyne_points"/>
+        <remap from="scan" to="/scan"/>
+        <rosparam>
+            target_frame: velodyne
+            min_height: -0.15
+            max_height: 0.15
+            angle_min: -3.14159
+            angle_max: 3.14159
+            angle_increment: 0.0087
+            scan_time: 0.1
+            range_min: 0.45
+            range_max: 100.0
+            use_inf: true
+        </rosparam>
+    </node>
+
+    <!-- 启动 gmapping 建图节点 -->
+    <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
+        <param name="base_frame" value="trunk"/> 
+        <param name="odom_frame" value="odom"/>
+        <param name="map_frame"  value="map"/>
+        
+        <remap from="scan" to="/scan"/>
+        </node>
+
+</launch>

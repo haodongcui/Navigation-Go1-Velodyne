@@ -1,0 +1,11 @@
+<launch>
+    
+    <!-- 启动 RealSense 相机节点，启用深度图像对齐 -->
+    <include file="$(find realsense2_camera)/launch/rs_camera.launch">
+        <arg name="align_depth" value="true"/>
+    </include>
+
+    <!-- 发布 go1 的 base/base_link 到相机的静态变换 -->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_camera" args="0.2 0 0.15 0 0 0 base camera_link 100" />
+
+</launch>

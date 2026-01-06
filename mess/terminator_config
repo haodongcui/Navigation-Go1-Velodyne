@@ -1,0 +1,100 @@
+[global_config]
+  title_transmit_bg_color = "#d30102"
+  focus = system
+  suppress_multiple_term_dialog = True
+
+[keybindings]
+
+[profiles]
+  [[default]]
+    # --- 核心显示设置 ---
+    show_titlebar = False
+    use_system_font = False
+    # 字体大小保持 12
+    font = Ubuntu Mono 12
+    
+    # --- 颜色与外观 (Ubuntu 风格优化版) ---
+    background_image = None
+    
+    # Ubuntu 官方深紫茄色背景 (看起来像深红/深紫)
+    background_color = "#300A24"
+    
+    # 文字颜色 (亮白，对比度高)
+    foreground_color = "#FFFFFF"
+    
+    # 光标改为 Ubuntu 橙色，非常显眼
+    cursor_color = "#E95420"
+    
+    cursor_shape = block
+    cursor_blink = True
+    
+    # 【配套修改】Ubuntu 官方终端调色板 (确保 ls 命令显示的颜色和系统一致)
+    palette = "#2e3436:#cc0000:#4e9a06:#c4a000:#3465a4:#75507b:#06989a:#d3d7cf:#555753:#ef2929:#8ae234:#fce94f:#729fcf:#ad7fa8:#34e2e2:#eeeeec"
+    
+    # --- 实用功能 ---
+    # copy_on_selection = True    # 选中即复制
+    scrollback_infinite = True  # 无限回滚 (编译 ROS 或查看长日志时必备)
+    scroll_on_output = False    # 有新输出时滚动到底部
+    scrollbar_position = hidden # 滚动条位置 (hidden/left/right)
+
+[layouts]
+  [[default]]
+    # --- 2x2 四宫格布局定义 ---
+    # 顶层窗口
+    [[[window0]]]
+      type = Window
+      parent = ""
+      size = 1200, 800
+      position = center
+    
+    # 第一层分割：上下分割 (VPaned)
+    [[[child1]]]
+      type = VPaned
+      parent = window0
+      order = 0
+      position = 400 # 分割线位置
+    
+    # 上半部分：左右分割 (HPaned)
+    [[[up]]]
+      type = HPaned
+      parent = child1
+      order = 0
+      position = 600
+    
+    # 下半部分：左右分割 (HPaned)
+    [[[down]]]
+      type = HPaned
+      parent = child1
+      order = 1
+      position = 600
+
+    # --- 具体的四个终端窗口 ---
+    # 左上
+    [[[up_L]]]
+      type = Terminal
+      parent = up
+      order = 0
+      profile = default
+    
+    # 右上
+    [[[up_R]]]
+      type = Terminal
+      parent = up
+      order = 1
+      profile = default
+    
+    # 左下
+    [[[Down_L]]]
+      type = Terminal
+      parent = down
+      order = 0
+      profile = default
+    
+    # 右下
+    [[[Down_R]]]
+      type = Terminal
+      parent = down
+      order = 1
+      profile = default
+
+[plugins]

@@ -1,0 +1,11 @@
+global_costmap:
+  # 全局地图是在地图坐标系下运行的
+  global_frame: map
+  # 机器人的中心是 trunk
+  robot_base_frame: trunk
+  
+  update_frequency: 2.0 # 全局地图不需要更新太快
+  static_map: true      # 使用 map_server 加载的静态地图
+  
+  # 增加这个容错，防止偶尔的 TF 延迟导致整个规划失败
+  transform_tolerance: 1.0

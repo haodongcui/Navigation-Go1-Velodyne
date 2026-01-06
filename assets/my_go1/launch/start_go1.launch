@@ -1,0 +1,33 @@
+<launch>
+    <!-- 启动 rviz, 可视化 go1 模型 -->
+    <!-- <node pkg="rviz" type="rviz" name="rviz" args="-d $(find my_go1)/rviz/my_config.rviz" /> -->
+
+    <!-- ========================================================== -->
+
+    <!-- 启动 unitree_legged_real 的核心节点, 翻译ros和udp指令 -->
+    <include file="$(find unitree_legged_real)/launch/real.launch">
+        <arg name="ctrl_level" value="highlevel"/>
+    </include>
+
+    <!-- 启动 go1 描述文件, 在 rviz 中展示 go1 模型 -->
+    <param name="robot_description" textfile="$(find go1_description)/urdf/go1.urdf"/>
+    
+    <!-- go1躯干 trunk 到 base 的静态变换 -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="trunk_to_base" args="0 0 0 0 0 0 trunk base" />
+
+    <!-- 启动机器人状态发布器, 接收关节状态, 计算几何信息, 发布各关节间的 TF -->
+    <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
+
+    <!-- 真机: 启动自定义节点, 提取 unitree_legged_real 发布的关节状态转换为 robot_state_publisher 能识别的格式 -->
+    <node pkg="my_go1" type="unitree_to_joint.py" name="unitree_to_joint_converter" output="screen" />
+
+    <!-- 如果没连真机, 那么可以临时启动关节状态发布器, 发布各关节的状态, 暂时代替真机数据, 连了真机就一定要注释掉! -->
+    <!-- <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" /> -->
+
+    <!-- 发布 odom->base 的 TF 变换 -->
+    <node pkg="my_go1" type="publish_odom_and_tf.py" name="go1_odom_publisher" output="screen" />
+
+    <!-- 启动 cmd_vel 到 high_cmd 的转换节点 -->
+    <node pkg="my_go1" type="cmd_vel_converter.py" name="cmd_vel_converter" output="screen" />
+
+</launch>
