@@ -18,11 +18,11 @@
     <!-- 启动机器人状态发布器, 接收关节状态, 计算几何信息, 发布各关节间的 TF -->
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
 
-    <!-- 真机: 启动自定义节点, 提取 unitree_legged_real 发布的关节状态转换为 robot_state_publisher 能识别的格式 -->
-    <node pkg="my_go1" type="unitree_to_joint.py" name="unitree_to_joint_converter" output="screen" />
-
     <!-- 如果没连真机, 那么可以临时启动关节状态发布器, 发布各关节的状态, 暂时代替真机数据, 连了真机就一定要注释掉! -->
     <!-- <node pkg="joint_state_publisher" type="joint_state_publisher" name="joint_state_publisher" /> -->
+
+    <!-- 真机: 启动自定义节点, 提取 unitree_legged_real 发布的关节状态转换为 robot_state_publisher 能识别的格式 -->
+    <node pkg="my_go1" type="unitree_to_joint.py" name="unitree_to_joint_converter" output="screen" />
 
     <!-- 发布 odom->base 的 TF 变换 -->
     <node pkg="my_go1" type="publish_odom_and_tf.py" name="go1_odom_publisher" output="screen" />

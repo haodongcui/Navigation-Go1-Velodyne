@@ -2,6 +2,8 @@
 
 本项目旨在通过 Docker 容器化方案，在高性能宿主机上完成 Unitree Go1 机器狗的 ROS 环境搭建、脚本开发及算法测试，最终平滑迁移至 Go1 自带的 Jetson Xavier NX 开发板。
 
+去掉docker后，整理为一篇笔记[基于Velodyne_VLP16雷达的宇树机器狗Go1建图和导航](./2026-01-06-基于Velodyne_VLP16雷达的宇树机器狗Go1建图和导航.md)
+
 ## 1. 硬件与环境配置
 
 ### 硬件设备
